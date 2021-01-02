@@ -1,16 +1,37 @@
-package pacmanoyunu;
+package main.java.pacmanoyunu;
+
+import org.w3c.dom.css.RGBColor;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
+import java.awt.geom.Path2D;
 
-public class OyunPanel extends JPanel {
+public class OyunPanel extends JPanel implements ActionListener {
     private Oyun oyun;
+    private Timer timer;
+    private static final int DELAY = 10;
+
     OyunPanel() {
         initPanel();
     }
 
     private void initPanel() {
         oyun = new Oyun();
+
+        addKeyListener(new TAdapter());
+        setFocusable(true);
+
+        timer = new Timer(DELAY, this);
+        timer.start();
+    }
+
+    @Override
+    public void actionPerformed(ActionEvent e) {
+        repaint();
     }
 
     @Override
@@ -34,6 +55,7 @@ public class OyunPanel extends JPanel {
         final int DOT_SIZE = SQUARE/4; // duvarların, noktaların genişliği
         final int OBJ_CR = (SQUARE - DOT_SIZE) / 2; // nesneni kordinati
 
+        // haritanın her karesini çizer
         for (int i = 0; i < Oyun.MAP_SIZE; i++) {
             for (int j = 0; j < Oyun.MAP_SIZE; j++) {
 
@@ -47,7 +69,7 @@ public class OyunPanel extends JPanel {
                         g2d.fillRect(x, y + OBJ_CR, SQUARE, DOT_SIZE);
                         break;
                     case 2: // yem
-                        g2d.setPaint(Color.yellow);
+                        g2d.setPaint(new Color(190, 135, 109));
                         g2d.fillOval(x + OBJ_CR, y + OBJ_CR, DOT_SIZE, DOT_SIZE);
                         break;
                     case 3: // dikey duvar
@@ -82,6 +104,26 @@ public class OyunPanel extends JPanel {
             y += SQUARE;
         }
 
+        // harita çizildikten sonra pacman ve düşmanların pozisyonlarını çizer
+
+        // pacman karakterini çiziyor
+        // pacma aslında bir yaydır
+        g2d.setPaint(Color.yellow);
+        Point paP = oyun.getPacmanPosition();
+        g2d.fillArc(paP.x * SQUARE, paP.y * SQUARE, SQUARE, SQUARE, oyun.getPacmanAspect().getValue() +  45, 270);
+
         g2d.dispose();
+    }
+
+    class TAdapter extends KeyAdapter {
+        @Override
+        public void keyReleased(KeyEvent e) {
+            oyun.keyReleased(e);
+        }
+
+        @Override
+        public void keyPressed(KeyEvent e) {
+            oyun.keyPressed(e);
+        }
     }
 }

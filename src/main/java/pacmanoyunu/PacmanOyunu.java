@@ -1,4 +1,4 @@
-package pacmanoyunu;
+package main.java.pacmanoyunu;
 
 import javax.swing.*;
 import java.awt.*;
