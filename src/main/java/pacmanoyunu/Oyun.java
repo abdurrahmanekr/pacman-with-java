@@ -1,12 +1,24 @@
 package main.java.pacmanoyunu;
 
+import com.sun.istack.internal.NotNull;
+
+import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 
 public class Oyun {
     public static int MAP_SIZE = 15;
+    public static final int DELAY = 10;
+    public static final int PROCESS_DELAY = 300;
 
-    private boolean isEnd;
+    private int animationComplate = 1;
+
+    private ActionListener listener;
+    private Timer timer;
+
+    private boolean isStarted;
     private int pacmanSpeed = 1;
 
     private int heart = 3;
@@ -62,6 +74,39 @@ public class Oyun {
         enemies[3] = new Dusman(Yon.EAST, 1, new Point(14, 14));
     }
 
+    Oyun(@NotNull ActionListener listener) {
+        super();
+
+        this.listener = listener;
+    }
+
+    public void start() {
+        isStarted = true;
+
+        timer = new Timer(DELAY, new GameProcess(this));
+        timer.start();
+    }
+
+    class GameProcess implements ActionListener {
+        private Oyun oyun;
+
+        GameProcess(Oyun oyun) {
+            this.oyun = oyun;
+        }
+
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            int anim = oyun.getAnimationComplate() + (Oyun.PROCESS_DELAY / Oyun.DELAY / 4); // 4 karede bitirsin
+
+            if (anim >= Oyun.PROCESS_DELAY)
+                oyun.setAnimationComplate(1);
+            else
+                oyun.setAnimationComplate(anim);
+
+            oyun.listener.actionPerformed(e);
+        }
+    }
+
     public Point getPacmanPosition() {
         return pacmanPosition;
     }
@@ -74,8 +119,8 @@ public class Oyun {
         return pacmanSpeed;
     }
 
-    public boolean isEnd() {
-        return isEnd;
+    public boolean isStarted() {
+        return isStarted;
     }
 
     public byte getMapBlock(int i, int j) {
@@ -86,11 +131,22 @@ public class Oyun {
         return enemies;
     }
 
+    public int getAnimationComplate() {
+        return animationComplate;
+    }
+
+    public void setAnimationComplate(int animationComplate) {
+        this.animationComplate = animationComplate;
+    }
+
     public void keyPressed(KeyEvent e) {
-        if (isEnd && e.getKeyCode() != KeyEvent.VK_SPACE)
+        if (!isStarted && e.getKeyCode() != KeyEvent.VK_SPACE)
             return;
 
         switch (e.getKeyCode()) {
+            case KeyEvent.VK_SPACE: // oyunu başlat
+                this.start();
+                break;
             case KeyEvent.VK_RIGHT:
                 this.pacmanAspect = Yon.EAST;
                 System.out.println("sağa tıkladı");

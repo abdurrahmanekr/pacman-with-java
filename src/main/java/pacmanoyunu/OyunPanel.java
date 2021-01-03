@@ -12,21 +12,16 @@ import java.awt.geom.Path2D;
 
 public class OyunPanel extends JPanel implements ActionListener {
     private Oyun oyun;
-    private Timer timer;
-    private static final int DELAY = 10;
 
     OyunPanel() {
         initPanel();
     }
 
     private void initPanel() {
-        oyun = new Oyun();
+        oyun = new Oyun(this);
 
         addKeyListener(new TAdapter());
         setFocusable(true);
-
-        timer = new Timer(DELAY, this);
-        timer.start();
     }
 
     @Override
@@ -54,6 +49,7 @@ public class OyunPanel extends JPanel implements ActionListener {
         final int SQUARE = PacmanOyunu.SCREEN_SIZE / Oyun.MAP_SIZE;
         final int DOT_SIZE = SQUARE/4; // duvarların, noktaların genişliği
         final int OBJ_CR = (SQUARE - DOT_SIZE) / 2; // nesneni kordinati
+        final float ANIM_RATIO = (float) oyun.getAnimationComplate() / Oyun.PROCESS_DELAY; // animasyon oranı
 
         // haritanın her karesini çizer
         for (int i = 0; i < Oyun.MAP_SIZE; i++) {
@@ -110,7 +106,14 @@ public class OyunPanel extends JPanel implements ActionListener {
         // pacma aslında bir yaydır
         g2d.setPaint(Color.yellow);
         Point paP = oyun.getPacmanPosition();
-        g2d.fillArc(paP.x * SQUARE, paP.y * SQUARE, SQUARE, SQUARE, oyun.getPacmanAspect().getValue() +  45, 270);
+        g2d.fillArc(
+            (int) (paP.x * SQUARE * (oyun.getPacmanAspect().isX() ? ANIM_RATIO : 1)),
+            (int) (paP.y * SQUARE * (oyun.getPacmanAspect().isY() ? ANIM_RATIO : 1)),
+            SQUARE,
+            SQUARE,
+            oyun.getPacmanAspect().getValue() + 45,
+            270
+        );
 
         g2d.dispose();
     }

@@ -14,4 +14,12 @@ public enum Yon {
     public int getValue() {
         return value;
     }
+
+    public boolean isX() {
+        return this == EAST || this == WEST;
+    }
+
+    public boolean isY() {
+        return this == NORTH || this == SOUTH;
+    }
 }
