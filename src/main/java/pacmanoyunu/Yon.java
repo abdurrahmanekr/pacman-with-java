@@ -22,4 +22,8 @@ public enum Yon {
     public boolean isY() {
         return this == NORTH || this == SOUTH;
     }
+
+    public int axisSignum() {
+        return (int) Math.signum(Math.cos(value));
+    }
 }

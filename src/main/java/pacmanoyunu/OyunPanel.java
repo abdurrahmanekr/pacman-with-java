@@ -107,8 +107,8 @@ public class OyunPanel extends JPanel implements ActionListener {
         g2d.setPaint(Color.yellow);
         Point paP = oyun.getPacmanPosition();
         g2d.fillArc(
-            (int) (paP.x * SQUARE * (oyun.getPacmanAspect().isX() ? ANIM_RATIO : 1)),
-            (int) (paP.y * SQUARE * (oyun.getPacmanAspect().isY() ? ANIM_RATIO : 1)),
+            (int) (paP.x * SQUARE + (oyun.getPacmanAspect().isX() ? oyun.getPacmanAspect().axisSignum() * ANIM_RATIO * SQUARE : 0)),
+            (int) (paP.y * SQUARE + (oyun.getPacmanAspect().isY() ? oyun.getPacmanAspect().axisSignum() * ANIM_RATIO * SQUARE : 0)),
             SQUARE,
             SQUARE,
             oyun.getPacmanAspect().getValue() + 45,

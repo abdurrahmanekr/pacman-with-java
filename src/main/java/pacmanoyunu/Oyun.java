@@ -98,8 +98,12 @@ public class Oyun {
         public void actionPerformed(ActionEvent e) {
             int anim = oyun.getAnimationComplate() + (Oyun.PROCESS_DELAY / Oyun.DELAY / 4); // 4 karede bitirsin
 
-            if (anim >= Oyun.PROCESS_DELAY)
+            if (anim >= Oyun.PROCESS_DELAY) {
                 oyun.setAnimationComplate(1);
+
+                // ilk animasyon bitti artık oynayabilir
+                oyun.move();
+            }
             else
                 oyun.setAnimationComplate(anim);
 
@@ -139,6 +143,51 @@ public class Oyun {
         this.animationComplate = animationComplate;
     }
 
+    public void move() {
+        Point p = pacmanPosition;
+
+        boolean right = map[p.y][p.x + 1] == 2 || map[p.y][p.x + 1] == 0;
+        boolean left = map[p.y][p.x - 1] == 2 || map[p.y][p.x - 1] == 0;
+        boolean top = map[p.y - 1][p.x] == 2 || map[p.y - 1][p.x] == 0;
+        boolean bottom = map[p.y + 1][p.x] == 2 || map[p.y + 1][p.x] == 0;
+
+        if (pacmanAspect == Yon.EAST && right) {
+            p.setLocation(p.x + 1, p.y);
+        }
+        else if (pacmanAspect == Yon.WEST && left) {
+            p.setLocation(p.x - 1, p.y);
+        }
+        else if (pacmanAspect == Yon.NORTH && top) {
+            p.setLocation(p.x, p.y - 1);
+        }
+        else if (pacmanAspect == Yon.SOUTH && bottom) {
+            p.setLocation(p.x, p.y + 1);
+        }
+
+        // seçtiği yön ile gideceği nokta alakalı değilse
+        // örneğin sağa gidecek ama duvar var
+        else {
+            if (right) {
+                p.setLocation(p.x + 1, p.y);
+                pacmanAspect = Yon.EAST;
+            }
+            else if (bottom) {
+                p.setLocation(p.x, p.y + 1);
+                pacmanAspect = Yon.SOUTH;
+            }
+            else if (left) {
+                p.setLocation(p.x - 1, p.y);
+                pacmanAspect = Yon.WEST;
+            }
+            else if (top) {
+                p.setLocation(p.x, p.y - 1);
+                pacmanAspect = Yon.NORTH;
+            }
+        }
+
+        System.out.println("x: " + p.x + ", y: " + p.y);
+    }
+
     public void keyPressed(KeyEvent e) {
         if (!isStarted && e.getKeyCode() != KeyEvent.VK_SPACE)
             return;
@@ -165,6 +214,8 @@ public class Oyun {
                 break;
         }
 
+        // hareket edince animasyon yeniden başlar
+        this.animationComplate = 1;
     }
 
     public void keyReleased(KeyEvent e) {
