@@ -82,6 +82,7 @@ public class Oyun {
 
     public void start() {
         isStarted = true;
+        isEnded = false;
 
         this.fastTest();
 
@@ -213,8 +214,8 @@ public class Oyun {
 
     public boolean isWin() {
         boolean win = true;
-        for (int i = 0; i < map.length; i++) {
-            for (int j = 0; j < map.length; j++) {
+        for (int i = 0; i < MAP_SIZE; i++) {
+            for (int j = 0; j < MAP_SIZE; j++) {
                 if (map[i][j] == 2) {
                     win = false;
                     break;
@@ -265,8 +266,8 @@ public class Oyun {
 
     // oyunda sadece bir yem bırakmak için
     public void fastTest() {
-        for (int i = 0; i < map.length; i++) {
-            for (int j = 0; j < map.length; j++) {
+        for (int i = 0; i < MAP_SIZE; i++) {
+            for (int j = 0; j < MAP_SIZE; j++) {
                 if (map[i][j] == 2) {
                     map[i][j] = 0;
                 }

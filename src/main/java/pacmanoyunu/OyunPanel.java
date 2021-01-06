@@ -50,6 +50,7 @@ public class OyunPanel extends JPanel implements ActionListener {
         final int DOT_SIZE = SQUARE/4; // duvarların, noktaların genişliği
         final int OBJ_CR = (SQUARE - DOT_SIZE) / 2; // nesneni kordinati
         final float ANIM_RATIO = (float) oyun.getAnimationComplate() / Oyun.PROCESS_DELAY; // animasyon oranı
+        final int SQ_CENTER = SQUARE * (Oyun.MAP_SIZE/2); // ortadaki kareye olan uzaklık
 
         // haritanın her karesini çizer
         for (int i = 0; i < Oyun.MAP_SIZE; i++) {
@@ -117,7 +118,28 @@ public class OyunPanel extends JPanel implements ActionListener {
 
         // oyunun son hali ile ilgili olaylar çiziliyor
         // bittiyse sonuçlar, başlamadıysa boşluğa basın gibi
-        
+        g2d.setPaint(Color.white);
+        g2d.setFont(new Font("Arial", Font.PLAIN, 20));
+
+        // oyun başlamış ve bitmişse
+        if (oyun.isStarted() && oyun.isEnded()) {
+            // oyunu kazanmışsa
+            if (oyun.isWin()) {
+                g2d.setPaint(Color.green);
+                g2d.drawString("Kazandın!!!", SQ_CENTER - 2 * SQUARE, SQ_CENTER);
+            }
+
+            // kaybetmişse
+            else {
+                g2d.setPaint(Color.red);
+                g2d.drawString("Kaybettin!!!", SQ_CENTER - 2 * SQUARE, SQ_CENTER);
+            }
+        }
+        else if (!oyun.isStarted()) {
+            g2d.drawString("Başlamak için", SQ_CENTER - 2 * SQUARE, SQ_CENTER - SQUARE);
+            g2d.drawString("Boşluk", SQ_CENTER - SQUARE, SQ_CENTER);
+        }
+
 
         g2d.dispose();
     }
