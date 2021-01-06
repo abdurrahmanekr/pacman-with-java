@@ -20,7 +20,7 @@ public class OyunPanel extends JPanel implements ActionListener {
     private void initPanel() {
         oyun = new Oyun(this);
 
-        addKeyListener(new TAdapter());
+        addKeyListener(new TAdapter(this));
         setFocusable(true);
     }
 
@@ -115,13 +115,27 @@ public class OyunPanel extends JPanel implements ActionListener {
             270
         );
 
+        // oyunun son hali ile ilgili olaylar çiziliyor
+        // bittiyse sonuçlar, başlamadıysa boşluğa basın gibi
+        
+
         g2d.dispose();
     }
 
     class TAdapter extends KeyAdapter {
+        private final ActionListener listener;
+        TAdapter(ActionListener listener) {this.listener = listener;}
+
         @Override
         public void keyReleased(KeyEvent e) {
-            oyun.keyReleased(e);
+            // oyun başlamış ve bitmişse herhangi bir tuşa basında oyunu yeniden oluşturmalı
+            if (oyun.isStarted() && oyun.isEnded()) {
+                oyun = new Oyun(this.listener);
+                oyun.start();
+            }
+            else {
+                oyun.keyReleased(e);
+            }
         }
 
         @Override

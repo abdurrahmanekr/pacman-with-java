@@ -19,7 +19,7 @@ public class Oyun {
     private Timer timer;
 
     private boolean isStarted;
-    private int pacmanSpeed = 1;
+    private boolean isEnded;
 
     private int heart = 3;
     private int highScore = 0;
@@ -75,7 +75,7 @@ public class Oyun {
     }
 
     Oyun(@NotNull ActionListener listener) {
-        super();
+        this();
 
         this.listener = listener;
     }
@@ -83,8 +83,20 @@ public class Oyun {
     public void start() {
         isStarted = true;
 
+        this.fastTest();
+
+        // eğer öncede oluşturulan bir timer varsa onu kapat
+        if (timer != null)
+            timer.stop();
+
         timer = new Timer(DELAY, new GameProcess(this));
         timer.start();
+    }
+
+    public void stop() {
+        isEnded = true;
+
+        timer.stop();
     }
 
     class GameProcess implements ActionListener {
@@ -119,12 +131,11 @@ public class Oyun {
         return pacmanAspect;
     }
 
-    public int getPacmanSpeed() {
-        return pacmanSpeed;
-    }
-
     public boolean isStarted() {
         return isStarted;
+    }
+    public boolean isEnded() {
+        return isEnded;
     }
 
     public byte getMapBlock(int i, int j) {
@@ -185,32 +196,62 @@ public class Oyun {
             }
         }
 
-        System.out.println("x: " + p.x + ", y: " + p.y);
+        // eğer ulaştığı koktada yem varsa ye
+        if (map[p.y][p.x] == 2) {
+            eat(p.x, p.y);
+        }
+
+        // kazanmışsa oyunu sonlandır
+        if (isWin()) {
+            stop();
+        }
+    }
+
+    public void eat(int x, int y) {
+        map[y][x] = 0;
+    }
+
+    public boolean isWin() {
+        boolean win = true;
+        for (int i = 0; i < map.length; i++) {
+            for (int j = 0; j < map.length; j++) {
+                if (map[i][j] == 2) {
+                    win = false;
+                    break;
+                }
+            }
+
+            if (!win)
+                break;
+        }
+
+        return win;
     }
 
     public void keyPressed(KeyEvent e) {
+        // başlamamış oyunda sadece boşluğu dikkate al
         if (!isStarted && e.getKeyCode() != KeyEvent.VK_SPACE)
             return;
 
         switch (e.getKeyCode()) {
             case KeyEvent.VK_SPACE: // oyunu başlat
+                // oyun başladıktan sonra boşluk tuşu işlevi olmamalı
+                if (isStarted && !isEnded)
+                    return;
+
                 this.start();
                 break;
             case KeyEvent.VK_RIGHT:
                 this.pacmanAspect = Yon.EAST;
-                System.out.println("sağa tıkladı");
                 break;
             case KeyEvent.VK_LEFT:
                 this.pacmanAspect = Yon.WEST;
-                System.out.println("sola tıkladı");
                 break;
             case KeyEvent.VK_DOWN:
                 this.pacmanAspect = Yon.SOUTH;
-                System.out.println("aşağı tıkladı");
                 break;
             case KeyEvent.VK_UP:
                 this.pacmanAspect = Yon.NORTH;
-                System.out.println("yukarı tıkladı");
                 break;
         }
 
@@ -220,5 +261,18 @@ public class Oyun {
 
     public void keyReleased(KeyEvent e) {
 
+    }
+
+    // oyunda sadece bir yem bırakmak için
+    public void fastTest() {
+        for (int i = 0; i < map.length; i++) {
+            for (int j = 0; j < map.length; j++) {
+                if (map[i][j] == 2) {
+                    map[i][j] = 0;
+                }
+            }
+        }
+
+        map[1][1] = 2;
     }
 }
