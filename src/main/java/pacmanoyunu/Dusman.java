@@ -4,16 +4,21 @@ import java.awt.*;
 
 public class Dusman {
     private Yon aspect;
-    private int speed = 1;
     private Point point;
 
     Dusman() {
-
     }
 
-    Dusman(Yon aspect, int speed, Point point) {
+    Dusman(Yon aspect, Point point) {
         this.aspect = aspect;
-        this.speed = speed;
         this.point = point;
+    }
+
+    public Point getPoint() {
+        return point;
+    }
+
+    public Yon getAspect() {
+        return aspect;
     }
 }

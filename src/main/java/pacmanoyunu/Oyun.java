@@ -68,10 +68,10 @@ public class Oyun {
     };
 
     Oyun() {
-        enemies[0] = new Dusman(Yon.EAST, 1, new Point(14, 14));
-        enemies[1] = new Dusman(Yon.EAST, 1, new Point(14, 14));
-        enemies[2] = new Dusman(Yon.EAST, 1, new Point(14, 14));
-        enemies[3] = new Dusman(Yon.EAST, 1, new Point(14, 14));
+        enemies[0] = new Dusman(Yon.NORTH, new Point(13, 12));
+        enemies[1] = new Dusman(Yon.WEST, new Point(12, 13));
+        enemies[2] = new Dusman(Yon.NORTH, new Point(13, 13));
+        enemies[3] = new Dusman(Yon.WEST, new Point(13, 13));
     }
 
     Oyun(@NotNull ActionListener listener) {
@@ -100,6 +100,8 @@ public class Oyun {
         timer.stop();
     }
 
+    // oyunun zamanla ilerlemesi sağlar
+    // animasyonları yavaş yavaş canlandırmak için
     class GameProcess implements ActionListener {
         private Oyun oyun;
 
@@ -111,6 +113,7 @@ public class Oyun {
         public void actionPerformed(ActionEvent e) {
             int anim = oyun.getAnimationComplate() + (Oyun.PROCESS_DELAY / Oyun.DELAY / 4); // 4 karede bitirsin
 
+            // animasyon bitti ve artık iş yapma zamanı
             if (anim >= Oyun.PROCESS_DELAY) {
                 oyun.setAnimationComplate(1);
 

@@ -8,7 +8,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
-import java.awt.geom.Path2D;
+import java.awt.geom.*;
 
 public class OyunPanel extends JPanel implements ActionListener {
     private Oyun oyun;
@@ -43,6 +43,16 @@ public class OyunPanel extends JPanel implements ActionListener {
      */
     public void paintGame(Graphics g) {
         Graphics2D g2d = (Graphics2D) g.create();
+
+        RenderingHints rh = new RenderingHints(
+                RenderingHints.KEY_ANTIALIASING,
+                RenderingHints.VALUE_ANTIALIAS_ON);
+
+        rh.put(RenderingHints.KEY_RENDERING,
+                RenderingHints.VALUE_RENDER_QUALITY);
+
+        // şekillerin kenarlarını yumuşatmak için
+        g2d.setRenderingHints(rh);
 
         // haritadaki her konumu alıyorlar
         int x = 0, y = 0;
@@ -116,6 +126,32 @@ public class OyunPanel extends JPanel implements ActionListener {
             270
         );
 
+        // oyundaki düşmanları çizer
+        for (Dusman enemy : oyun.getEnemies()) {
+            Point eP = enemy.getPoint();
+            Yon eAs = enemy.getAspect();
+            int ex = (int) (eP.x * SQUARE + (eAs.isX() ? eAs.axisSignum() * ANIM_RATIO * SQUARE : 0));
+            int ey = (int) (eP.y * SQUARE + (eAs.isY() ? eAs.axisSignum() * ANIM_RATIO * SQUARE : 0));
+
+            g2d.setPaint(Color.red);
+
+            Area a1 = new Area(new Rectangle2D.Double(ex, ey, SQUARE, SQUARE));
+            Area dikey = new Area(new Ellipse2D.Double(ex + OBJ_CR, ey, DOT_SIZE, SQUARE));
+            Area yatay = new Area(new Ellipse2D.Double(ex, ey + OBJ_CR, SQUARE, DOT_SIZE));
+            Area nokta1 = new Area(new Ellipse2D.Double(ex, ey, DOT_SIZE, DOT_SIZE));
+            Area nokta2 = new Area(new Ellipse2D.Double(ex + SQUARE - DOT_SIZE, ey + SQUARE - DOT_SIZE, DOT_SIZE, DOT_SIZE));
+            Area nokta3 = new Area(new Rectangle2D.Double(ex + SQUARE - DOT_SIZE, ey, DOT_SIZE, DOT_SIZE));
+            Area nokta4 = new Area(new Rectangle2D.Double(ex, ey + SQUARE - DOT_SIZE, DOT_SIZE, DOT_SIZE));
+
+            dikey.add(yatay);
+            dikey.add(nokta1);
+            dikey.add(nokta2);
+            dikey.add(nokta3);
+            dikey.add(nokta4);
+            g2d.fill(dikey);
+
+        }
+
         // oyunun son hali ile ilgili olaylar çiziliyor
         // bittiyse sonuçlar, başlamadıysa boşluğa basın gibi
         g2d.setPaint(Color.white);
@@ -139,7 +175,6 @@ public class OyunPanel extends JPanel implements ActionListener {
             g2d.drawString("Başlamak için", SQ_CENTER - 2 * SQUARE, SQ_CENTER - SQUARE);
             g2d.drawString("Boşluk", SQ_CENTER - SQUARE, SQ_CENTER);
         }
-
 
         g2d.dispose();
     }
