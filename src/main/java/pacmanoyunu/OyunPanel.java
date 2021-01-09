@@ -118,8 +118,8 @@ public class OyunPanel extends JPanel implements ActionListener {
         g2d.setPaint(Color.yellow);
         Point paP = oyun.getPacmanPosition();
         g2d.fillArc(
-            (int) (paP.x * SQUARE + (oyun.getPacmanAspect().isX() ? oyun.getPacmanAspect().axisSignum() * ANIM_RATIO * SQUARE : 0)),
-            (int) (paP.y * SQUARE + (oyun.getPacmanAspect().isY() ? oyun.getPacmanAspect().axisSignum() * ANIM_RATIO * SQUARE : 0)),
+            (int) (paP.x * SQUARE + (oyun.getPacmanAspect().isX() && !oyun.isBorder() ? oyun.getPacmanAspect().axisSignum() * ANIM_RATIO * SQUARE : 0)),
+            (int) (paP.y * SQUARE + (oyun.getPacmanAspect().isY() && !oyun.isBorder() ? oyun.getPacmanAspect().axisSignum() * ANIM_RATIO * SQUARE : 0)),
             SQUARE,
             SQUARE,
             oyun.getPacmanAspect().getValue() + 45,
@@ -133,7 +133,7 @@ public class OyunPanel extends JPanel implements ActionListener {
             int ex = (int) (eP.x * SQUARE + (eAs.isX() ? eAs.axisSignum() * ANIM_RATIO * SQUARE : 0));
             int ey = (int) (eP.y * SQUARE + (eAs.isY() ? eAs.axisSignum() * ANIM_RATIO * SQUARE : 0));
 
-            g2d.setPaint(Color.red);
+            g2d.setPaint(enemy.getColor());
 
             Area a1 = new Area(new Rectangle2D.Double(ex, ey, SQUARE, SQUARE));
             Area dikey = new Area(new Ellipse2D.Double(ex + OBJ_CR, ey, DOT_SIZE, SQUARE));

@@ -7,6 +7,7 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
+import java.util.Random;
 
 public class Oyun {
     public static int MAP_SIZE = 15;
@@ -37,7 +38,7 @@ public class Oyun {
     /**
      * Düşmanların bulunduğu noktalar
      */
-    private Dusman[] enemies = new Dusman[4];
+    private Dusman[] enemies;
 
     /**
      * 0 -> boşluk
@@ -68,10 +69,12 @@ public class Oyun {
     };
 
     Oyun() {
-        enemies[0] = new Dusman(Yon.NORTH, new Point(13, 12));
-        enemies[1] = new Dusman(Yon.WEST, new Point(12, 13));
-        enemies[2] = new Dusman(Yon.NORTH, new Point(13, 13));
-        enemies[3] = new Dusman(Yon.WEST, new Point(13, 13));
+        enemies = new Dusman[] {
+            new Dusman(Yon.NORTH, new Point(13, 12), new Point(this.pacmanPosition)),
+//            new Dusman(Yon.WEST, new Point(12, 13), new Point(this.pacmanPosition)),
+//            new Dusman(Yon.NORTH, new Point(13, 13), new Point(this.pacmanPosition)),
+//            new Dusman(Yon.WEST, new Point(13, 13), new Point(this.pacmanPosition)),
+        };
     }
 
     Oyun(@NotNull ActionListener listener) {
@@ -119,6 +122,33 @@ public class Oyun {
 
                 // ilk animasyon bitti artık oynayabilir
                 oyun.move();
+
+                // oyundaki düşmanları oyucunun en son görüldüğü noktaya ilet
+                Random random = new Random();
+                for (Dusman enemy : oyun.getEnemies()) {
+                    Point eP = enemy.getPoint();
+                    // düşman pacman'in geldiği noktaya kadar gelmiş
+                    // o yüzden pacman'in şu anki noktası verelim
+                    if (eP.distance(enemy.getPacmanLastPoint()) == 0) {
+                        enemy.setPacmanLastPoint(new Point(pacmanPosition));
+                    }
+
+                    // en yakın yöne doğru ayarla
+                    enemy.setAspect(getNearestWay(enemy));
+
+                    if (enemy.getAspect() == Yon.SOUTH) {
+                        enemy.setPoint(new Point(eP.x, eP.y + 1));
+                    }
+                    else if (enemy.getAspect() == Yon.NORTH) {
+                        enemy.setPoint(new Point(eP.x, eP.y - 1));
+                    }
+                    else if (enemy.getAspect() == Yon.EAST) {
+                        enemy.setPoint(new Point(eP.x + 1, eP.y));
+                    }
+                    else {
+                        enemy.setPoint(new Point(eP.x - 1, eP.y));
+                    }
+                }
             }
             else
                 oyun.setAnimationComplate(anim);
@@ -237,6 +267,8 @@ public class Oyun {
         if (!isStarted && e.getKeyCode() != KeyEvent.VK_SPACE)
             return;
 
+        Yon beforeAspect = this.pacmanAspect;
+
         switch (e.getKeyCode()) {
             case KeyEvent.VK_SPACE: // oyunu başlat
                 // oyun başladıktan sonra boşluk tuşu işlevi olmamalı
@@ -259,12 +291,85 @@ public class Oyun {
                 break;
         }
 
-        // hareket edince animasyon yeniden başlar
-        this.animationComplate = 1;
+        // oynadığı nokta çizgiye denk geliyorsa oynamasın
+        if (isBorder()) {
+            this.pacmanAspect = beforeAspect;
+        }
+        else {
+            // hareket edince animasyon yeniden başlar
+            if (beforeAspect != pacmanAspect) {
+                this.animationComplate = 1;
+            }
+        }
     }
 
     public void keyReleased(KeyEvent e) {
 
+    }
+
+    // öklid algoritmasına göre pacman'e gitmek için en yakın yön veriliyor
+    public Yon getNearestWay(Dusman enemy) {
+        Point pP = enemy.getPacmanLastPoint();
+        Point eP = enemy.getPoint();
+
+        double distance = 0;
+        Yon neastYon = Yon.WEST;
+
+        // güney
+        if (isWay(eP.x, eP.y + 1)) {
+            distance = new Point(eP.x, eP.y + 1).distance(pP);
+            neastYon = Yon.SOUTH;
+        }
+
+        // kuzey
+        if (isWay(eP.x, eP.y - 1)) {
+            double tmpDis = new Point(eP.x, eP.y - 1).distance(pP);
+
+            if (distance == 0 || tmpDis < distance) {
+                distance = tmpDis;
+                neastYon = Yon.NORTH;
+            }
+        }
+
+        // doğu
+        if (isWay(eP.x + 1, eP.y)) {
+            double tmpDis = new Point(eP.x + 1, eP.y).distance(pP);
+
+            if (distance == 0 || tmpDis < distance) {
+                distance = tmpDis;
+                neastYon = Yon.EAST;
+            }
+        }
+
+        // batı
+        if (isWay(eP.x - 1, eP.y)) {
+            double tmpDis = new Point(eP.x - 1, eP.y).distance(pP);
+
+            if (distance == 0 || tmpDis < distance) {
+                neastYon = Yon.WEST;
+            }
+        }
+
+        return neastYon;
+    }
+
+    // harita  üzerinde gidilebilir bir yer olup olmadığını döndürür
+    public boolean isWay(int x, int y) {
+        return map[y][x] == 2 || map[y][x] == 0;
+    }
+
+    // pacman'in yönüne bakarak yönü sınıra doğruysa bildirir
+    public boolean isBorder() {
+        Point pP = pacmanPosition;
+
+        if (pacmanAspect == Yon.NORTH)
+            return !isWay(pP.x, pP.y - 1);
+        if (pacmanAspect == Yon.SOUTH)
+            return !isWay(pP.x, pP.y + 1);
+        if (pacmanAspect == Yon.EAST)
+            return !isWay(pP.x + 1, pP.y);
+
+        return !isWay(pP.x - 1, pP.y);
     }
 
     // oyunda sadece bir yem bırakmak için
