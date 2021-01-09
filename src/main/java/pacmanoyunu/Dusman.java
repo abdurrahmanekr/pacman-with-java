@@ -6,6 +6,7 @@ import java.util.Random;
 public class Dusman {
     private Yon aspect;
     private Point point;
+    private Point beforePoint;
     private Point pacmanLastPoint;
     private Color color;
 
@@ -26,7 +27,12 @@ public class Dusman {
     }
 
     public void setPoint(Point point) {
+        this.beforePoint = this.point;
         this.point = point;
+    }
+
+    public Point getBeforePoint() {
+        return this.beforePoint;
     }
 
     public Point getPacmanLastPoint() {

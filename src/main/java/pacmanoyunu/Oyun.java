@@ -311,41 +311,52 @@ public class Oyun {
     public Yon getNearestWay(Dusman enemy) {
         Point pP = enemy.getPacmanLastPoint();
         Point eP = enemy.getPoint();
+        Point bP = enemy.getBeforePoint();
 
-        double distance = 0;
+        // pacman'in bulunduğu bölgeye gidilebiliyorsa diğer ayrıntılara bakmana gerek yok hemen oraya git
+        if (bP != null && pP.distance(bP) == 0) {
+            System.out.println("pacman geride");
+        }
+
+        double distance = Integer.MAX_VALUE; // e uzak veriliyor, giderek daha kısa bulunacak
         Yon neastYon = Yon.WEST;
+        Point tmpP;
 
         // güney
-        if (isWay(eP.x, eP.y + 1)) {
-            distance = new Point(eP.x, eP.y + 1).distance(pP);
+        tmpP = new Point(eP.x, eP.y + 1);
+        if (isWay(eP.x, eP.y + 1) && (bP == null || bP.distance(tmpP) > 0)) {
+            distance = tmpP.distance(pP);
             neastYon = Yon.SOUTH;
         }
 
         // kuzey
-        if (isWay(eP.x, eP.y - 1)) {
-            double tmpDis = new Point(eP.x, eP.y - 1).distance(pP);
+        tmpP = new Point(eP.x, eP.y - 1);
+        if (isWay(eP.x, eP.y - 1) && (bP == null || bP.distance(tmpP) > 0)) {
+            double tmpDis = tmpP.distance(pP);
 
-            if (distance == 0 || tmpDis < distance) {
+            if (tmpDis < distance) {
                 distance = tmpDis;
                 neastYon = Yon.NORTH;
             }
         }
 
         // doğu
-        if (isWay(eP.x + 1, eP.y)) {
-            double tmpDis = new Point(eP.x + 1, eP.y).distance(pP);
+        tmpP = new Point(eP.x + 1, eP.y);
+        if (isWay(eP.x + 1, eP.y) && (bP == null || bP.distance(tmpP) > 0)) {
+            double tmpDis = tmpP.distance(pP);
 
-            if (distance == 0 || tmpDis < distance) {
+            if (tmpDis < distance) {
                 distance = tmpDis;
                 neastYon = Yon.EAST;
             }
         }
 
         // batı
-        if (isWay(eP.x - 1, eP.y)) {
-            double tmpDis = new Point(eP.x - 1, eP.y).distance(pP);
+        tmpP = new Point(eP.x - 1, eP.y);
+        if (isWay(eP.x - 1, eP.y) && (bP == null || bP.distance(tmpP) > 0)) {
+            double tmpDis = tmpP.distance(pP);
 
-            if (distance == 0 || tmpDis < distance) {
+            if (tmpDis < distance) {
                 neastYon = Yon.WEST;
             }
         }
