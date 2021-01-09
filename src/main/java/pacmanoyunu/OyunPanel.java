@@ -130,8 +130,8 @@ public class OyunPanel extends JPanel implements ActionListener {
         for (Dusman enemy : oyun.getEnemies()) {
             Point eP = enemy.getPoint();
             Yon eAs = enemy.getAspect();
-            int ex = (int) (eP.x * SQUARE + (eAs.isX() ? eAs.axisSignum() * ANIM_RATIO * SQUARE : 0));
-            int ey = (int) (eP.y * SQUARE + (eAs.isY() ? eAs.axisSignum() * ANIM_RATIO * SQUARE : 0));
+            int ex = (int) (eP.x * SQUARE + (eAs.isX() && !oyun.isBorder(enemy) ? eAs.axisSignum() * ANIM_RATIO * SQUARE : 0));
+            int ey = (int) (eP.y * SQUARE + (eAs.isY() && !oyun.isBorder(enemy) ? eAs.axisSignum() * ANIM_RATIO * SQUARE : 0));
 
             g2d.setPaint(enemy.getColor());
 

@@ -372,6 +372,21 @@ public class Oyun {
         return !isWay(pP.x - 1, pP.y);
     }
 
+    // düşmanın'in yönüne bakarak yönü sınıra doğruysa bildirir
+    public boolean isBorder(Dusman enemy) {
+        Point eP = enemy.getPoint();
+        Yon eAs = enemy.getAspect();
+
+        if (eAs == Yon.NORTH)
+            return !isWay(eP.x, eP.y - 1);
+        if (eAs == Yon.SOUTH)
+            return !isWay(eP.x, eP.y + 1);
+        if (eAs == Yon.EAST)
+            return !isWay(eP.x + 1, eP.y);
+
+        return !isWay(eP.x - 1, eP.y);
+    }
+
     // oyunda sadece bir yem bırakmak için
     public void fastTest() {
         for (int i = 0; i < MAP_SIZE; i++) {
