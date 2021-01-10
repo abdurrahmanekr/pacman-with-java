@@ -70,10 +70,9 @@ public class Oyun {
 
     Oyun() {
         enemies = new Dusman[] {
-            new Dusman(Yon.NORTH, new Point(13, 12), new Point(this.pacmanPosition)),
-//            new Dusman(Yon.WEST, new Point(12, 13), new Point(this.pacmanPosition)),
-//            new Dusman(Yon.NORTH, new Point(13, 13), new Point(this.pacmanPosition)),
-//            new Dusman(Yon.WEST, new Point(13, 13), new Point(this.pacmanPosition)),
+            new Dusman(Yon.WEST, new Point(13, 1), new Point(this.pacmanPosition)),
+            new Dusman(Yon.WEST, new Point(10, 10), new Point(this.pacmanPosition)),
+            new Dusman(Yon.NORTH, new Point(13, 13), new Point(this.pacmanPosition)),
         };
     }
 
