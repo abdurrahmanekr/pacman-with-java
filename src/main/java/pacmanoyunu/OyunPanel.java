@@ -194,9 +194,9 @@ public class OyunPanel extends JPanel implements ActionListener {
 
         g2d.drawString("CAN: ", 0, STY + 20);
 
-        g2d.drawString("PUAN: ", 0, STY + 40);
+        g2d.drawString("SÜRE: " + oyun.getScore(), 0, STY + 40);
 
-        g2d.drawString("EN YÜKSEK PUAN: ", 0, STY + 60);
+        g2d.drawString("EN KISA SÜRE: ", 0, STY + 60);
 
         // kalp çizmek için
         heartDraw(g2d, 45, STY);

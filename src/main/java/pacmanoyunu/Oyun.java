@@ -15,6 +15,7 @@ public class Oyun {
     public static final int PROCESS_DELAY = 300;
 
     private int animationComplate = 1;
+    private int score = 0;
 
     private ActionListener listener;
     private Timer timer;
@@ -117,6 +118,7 @@ public class Oyun {
 
             // animasyon bitti ve artık iş yapma zamanı
             if (anim >= Oyun.PROCESS_DELAY) {
+                score++;
                 oyun.setAnimationComplate(1);
 
                 // ilk animasyon bitti artık oynayabilir
@@ -187,6 +189,10 @@ public class Oyun {
 
     public int getAnimationComplate() {
         return animationComplate;
+    }
+
+    public int getScore() {
+        return score;
     }
 
     public void setAnimationComplate(int animationComplate) {
