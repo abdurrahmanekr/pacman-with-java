@@ -122,8 +122,8 @@ public class OyunPanel extends JPanel implements ActionListener {
             (int) (paP.y * SQUARE + (oyun.getPacmanAspect().isY() && !oyun.isBorder() ? oyun.getPacmanAspect().axisSignum() * ANIM_RATIO * SQUARE : 0)),
             SQUARE,
             SQUARE,
-            oyun.getPacmanAspect().getValue() + 45,
-            270
+            oyun.getPacmanAspect().getValue() + (int) (45 * (1-ANIM_RATIO)),
+            360 - ((int) (45 * (1-ANIM_RATIO)) * 2)
         );
 
         // oyundaki düşmanları çizer
@@ -176,7 +176,40 @@ public class OyunPanel extends JPanel implements ActionListener {
             g2d.drawString("Boşluk", SQ_CENTER - SQUARE, SQ_CENTER);
         }
 
+        // oyuna ait son bilgileri çizdirmek için
+        // can, high score vs.
+        paintInfoBoard(g);
+
         g2d.dispose();
+    }
+
+    public void paintInfoBoard(Graphics g) {
+        Graphics2D g2d = (Graphics2D) g.create();
+
+        final int STY = PacmanOyunu.SCREEN_SIZE;
+
+        g2d.setPaint(Color.white);
+        g2d.fillRect(0, STY, PacmanOyunu.SCREEN_SIZE, 100);
+
+        g2d.setPaint(Color.black);
+        g2d.setFont(new Font("Arial", Font.PLAIN, 15));
+
+        g2d.drawString("CAN: ", 0, STY + 20);
+
+        // kalp çizmek için
+        heartDraw(g2d, 45, STY);
+
+    }
+
+    public void heartDraw(Graphics2D g2d, int x, int y) {
+        g2d.setPaint(Color.red);
+
+        final int SQUARE = PacmanOyunu.SCREEN_SIZE / Oyun.MAP_SIZE;
+        final int HEART_SIZE = SQUARE/2; // duvarların, noktaların genişliği
+
+        g2d.fillOval(x, y, HEART_SIZE, HEART_SIZE);
+        g2d.fillOval(x + HEART_SIZE - HEART_SIZE/4, y, HEART_SIZE, HEART_SIZE);
+        g2d.fillPolygon(new int[] {x, x+HEART_SIZE*2- HEART_SIZE/4, x + HEART_SIZE - HEART_SIZE/8}, new int[] {y+HEART_SIZE/2, y+HEART_SIZE/2, y+HEART_SIZE*2}, 3);
     }
 
     class TAdapter extends KeyAdapter {
