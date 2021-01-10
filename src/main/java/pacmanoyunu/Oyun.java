@@ -152,6 +152,7 @@ public class Oyun {
 
                     // eğer pacman ile düşman karşılaşmışsa oyun kaybedilir
                     if (pacmanPosition.distance(enemy.getPoint()) == 0) {
+                        heart--;
                         stop();
                         break;
                     }
@@ -191,12 +192,16 @@ public class Oyun {
         return animationComplate;
     }
 
+    public void setAnimationComplate(int animationComplate) {
+        this.animationComplate = animationComplate;
+    }
+
     public int getScore() {
         return score;
     }
 
-    public void setAnimationComplate(int animationComplate) {
-        this.animationComplate = animationComplate;
+    public int getHeart() {
+        return heart;
     }
 
     public void move() {

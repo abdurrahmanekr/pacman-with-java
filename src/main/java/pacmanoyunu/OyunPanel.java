@@ -199,22 +199,22 @@ public class OyunPanel extends JPanel implements ActionListener {
         g2d.drawString("EN KISA SÜRE: ", 0, STY + 60);
 
         // kalp çizmek için
-        heartDraw(g2d, 45, STY);
+        for (int i = 0; i < oyun.getHeart(); i++) {
+            g2d.setPaint(Color.red);
+
+            final int SQUARE = PacmanOyunu.SCREEN_SIZE / Oyun.MAP_SIZE;
+            final int HEART_SIZE = SQUARE/2; // duvarların, noktaların genişliği
+
+            g2d.fillOval(45 + (i*(HEART_SIZE+2)), STY + HEART_SIZE/3, HEART_SIZE, HEART_SIZE);
+        }
     }
 
-    public void heartDraw(Graphics2D g2d, int x, int y) {
-        g2d.setPaint(Color.red);
-
-        final int SQUARE = PacmanOyunu.SCREEN_SIZE / Oyun.MAP_SIZE;
-        final int HEART_SIZE = SQUARE/2; // duvarların, noktaların genişliği
-
-        g2d.fillOval(x, y + HEART_SIZE/3, HEART_SIZE, HEART_SIZE);
-
-        // eski kap yapma yöntemi
-//        g2d.fillOval(x, y, HEART_SIZE, HEART_SIZE);
-//        g2d.fillOval(x + HEART_SIZE - HEART_SIZE/4, y, HEART_SIZE, HEART_SIZE);
-//        g2d.fillPolygon(new int[] {x, x+HEART_SIZE*2- HEART_SIZE/4, x + HEART_SIZE - HEART_SIZE/8}, new int[] {y+HEART_SIZE/2, y+HEART_SIZE/2, y+HEART_SIZE*2}, 3);
-    }
+//    public void heartDraw(Graphics2D g2d, int x, int y) {
+//        // eski kap yapma yöntemi
+////        g2d.fillOval(x, y, HEART_SIZE, HEART_SIZE);
+////        g2d.fillOval(x + HEART_SIZE - HEART_SIZE/4, y, HEART_SIZE, HEART_SIZE);
+////        g2d.fillPolygon(new int[] {x, x+HEART_SIZE*2- HEART_SIZE/4, x + HEART_SIZE - HEART_SIZE/8}, new int[] {y+HEART_SIZE/2, y+HEART_SIZE/2, y+HEART_SIZE*2}, 3);
+//    }
 
     class TAdapter extends KeyAdapter {
         private final ActionListener listener;
