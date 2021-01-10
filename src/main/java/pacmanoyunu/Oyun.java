@@ -147,6 +147,12 @@ public class Oyun {
                     else {
                         enemy.setPoint(new Point(eP.x - 1, eP.y));
                     }
+
+                    // eğer pacman ile düşman karşılaşmışsa oyun kaybedilir
+                    if (pacmanPosition.distance(enemy.getPoint()) == 0) {
+                        stop();
+                        break;
+                    }
                 }
             }
             else
