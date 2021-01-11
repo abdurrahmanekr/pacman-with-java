@@ -29,12 +29,12 @@ public class Oyun {
     /**
      * Pacman yönü
      */
-    private Yon pacmanAspect = Yon.EAST;
+    private Yon pacmanAspect;
 
     /**
      * Pacman'in bulunduğu nokta
      */
-    private Point pacmanPosition = new Point(1, 1);
+    private Point pacmanPosition;
 
     /**
      * Düşmanların bulunduğu noktalar
@@ -70,11 +70,7 @@ public class Oyun {
     };
 
     Oyun() {
-        enemies = new Dusman[] {
-            new Dusman(Yon.WEST, new Point(13, 1), new Point(this.pacmanPosition)),
-            new Dusman(Yon.WEST, new Point(10, 10), new Point(this.pacmanPosition)),
-            new Dusman(Yon.NORTH, new Point(13, 13), new Point(this.pacmanPosition)),
-        };
+        loadMap();
     }
 
     Oyun(@NotNull ActionListener listener) {
@@ -87,7 +83,9 @@ public class Oyun {
         isStarted = true;
         isEnded = false;
 
-        this.fastTest();
+        loadMap();
+
+//        this.fastTest();
 
         // eğer öncede oluşturulan bir timer varsa onu kapat
         if (timer != null)
@@ -101,6 +99,16 @@ public class Oyun {
         isEnded = true;
 
         timer.stop();
+    }
+
+    public void loadMap() {
+        pacmanPosition = new Point(1, 1);
+        pacmanAspect = Yon.EAST;
+        enemies = new Dusman[] {
+                new Dusman(Yon.WEST, new Point(13, 1), new Point(this.pacmanPosition)),
+                new Dusman(Yon.WEST, new Point(10, 10), new Point(this.pacmanPosition)),
+                new Dusman(Yon.NORTH, new Point(13, 13), new Point(this.pacmanPosition)),
+        };
     }
 
     // oyunun zamanla ilerlemesi sağlar
@@ -425,5 +433,6 @@ public class Oyun {
         }
 
         map[1][1] = 2;
+        map[2][1] = 2;
     }
 }

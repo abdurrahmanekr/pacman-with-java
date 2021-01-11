@@ -221,20 +221,15 @@ public class OyunPanel extends JPanel implements ActionListener {
         TAdapter(ActionListener listener) {this.listener = listener;}
 
         @Override
-        public void keyReleased(KeyEvent e) {
-            // oyun başlamış ve bitmişse herhangi bir tuşa basında oyunu yeniden oluşturmalı
-            if (oyun.isStarted() && oyun.isEnded()) {
+        public void keyPressed(KeyEvent e) {
+            // can tamamen bitmişse ve bir tuşa basılmışsa
+            if (oyun.getHeart() == 0 || oyun.isWin()) {
                 oyun = new Oyun(this.listener);
                 oyun.start();
             }
             else {
-                oyun.keyReleased(e);
+                oyun.keyPressed(e);
             }
-        }
-
-        @Override
-        public void keyPressed(KeyEvent e) {
-            oyun.keyPressed(e);
         }
     }
 }
