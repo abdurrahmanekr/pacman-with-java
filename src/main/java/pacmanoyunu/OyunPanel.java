@@ -181,6 +181,11 @@ public class OyunPanel extends JPanel implements ActionListener {
                 }
             }
 
+            else if (oyun.getHeart() > 0) {
+                g2d.setPaint(Color.red);
+                g2d.drawString(oyun.getHeart() + " Canın Kaldı!!!", SQ_CENTER - 2 * SQUARE, SQ_CENTER);
+            }
+
             // kaybetmişse
             else {
                 g2d.setPaint(Color.red);
