@@ -270,8 +270,11 @@ public class OyunPanel extends JPanel implements ActionListener {
         public void keyPressed(KeyEvent e) {
             // can tamamen bitmişse ve bir tuşa basılmışsa
             if (oyun.getHeart() == 0 || oyun.isWin()) {
-                oyun = new Oyun(this.listener);
-                oyun.start();
+                // boşluk tuşuna basmışsa başlar
+                if (e.getKeyCode() == KeyEvent.VK_SPACE) {
+                    oyun = new Oyun(this.listener);
+                    oyun.start();
+                }
             }
             else {
                 oyun.keyPressed(e);
