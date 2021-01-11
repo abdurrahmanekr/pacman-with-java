@@ -9,9 +9,18 @@ import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.geom.*;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.FileReader;
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 
 public class OyunPanel extends JPanel implements ActionListener {
     private Oyun oyun;
+    private static final String TMP_DIR = System.getProperty("java.io.tmpdir");
 
     OyunPanel() {
         initPanel();
@@ -163,6 +172,13 @@ public class OyunPanel extends JPanel implements ActionListener {
             if (oyun.isWin()) {
                 g2d.setPaint(Color.green);
                 g2d.drawString("Kazandın!!!", SQ_CENTER - 2 * SQUARE, SQ_CENTER);
+
+                // oyun kazanılmışsa en yüksek score hesaplanır
+                int highScore = getHighScore();
+                if (highScore == -1 || oyun.getScore() < highScore) {
+                    highScore = oyun.getScore();
+                    setHighScore(highScore);
+                }
             }
 
             // kaybetmişse
@@ -184,6 +200,8 @@ public class OyunPanel extends JPanel implements ActionListener {
     }
 
     public void paintInfoBoard(Graphics2D g2d) {
+        int highScore = getHighScore();
+
         final int STY = PacmanOyunu.SCREEN_SIZE;
 
         g2d.setPaint(Color.white);
@@ -196,7 +214,7 @@ public class OyunPanel extends JPanel implements ActionListener {
 
         g2d.drawString("SÜRE: " + oyun.getScore(), 0, STY + 40);
 
-        g2d.drawString("EN KISA SÜRE: ", 0, STY + 60);
+        g2d.drawString("EN KISA SÜRE: " + (highScore == -1 ? "Tanımlanmadı" : highScore), 0, STY + 60);
 
         // kalp çizmek için
         for (int i = 0; i < oyun.getHeart(); i++) {
@@ -209,12 +227,35 @@ public class OyunPanel extends JPanel implements ActionListener {
         }
     }
 
-//    public void heartDraw(Graphics2D g2d, int x, int y) {
-//        // eski kap yapma yöntemi
-////        g2d.fillOval(x, y, HEART_SIZE, HEART_SIZE);
-////        g2d.fillOval(x + HEART_SIZE - HEART_SIZE/4, y, HEART_SIZE, HEART_SIZE);
-////        g2d.fillPolygon(new int[] {x, x+HEART_SIZE*2- HEART_SIZE/4, x + HEART_SIZE - HEART_SIZE/8}, new int[] {y+HEART_SIZE/2, y+HEART_SIZE/2, y+HEART_SIZE*2}, 3);
-//    }
+    // en yüksek score'u dosyadan okur
+    public int getHighScore() {
+        try {
+            Path highScorePath = Paths.get(TMP_DIR, "java-pacman-high-score.txt");
+            File hightScoreFile = new File(highScorePath.toString());
+            if (!hightScoreFile.exists()) {
+                hightScoreFile.createNewFile();
+                return -1;
+            }
+
+            String value = new String(Files.readAllBytes(highScorePath));
+            if (!value.isEmpty())
+                return Integer.parseInt(value);
+
+            return -1;
+        }
+        catch (Exception e) {
+            return -1;
+        }
+    }
+
+    // en yüksek score'u dosyaya kaydeder
+    public void setHighScore(int highScore) {
+        try {
+            Path highScorePath = Paths.get(TMP_DIR, "java-pacman-high-score.txt");
+            Files.write(highScorePath, String.valueOf(highScore).getBytes(StandardCharsets.UTF_8));
+        }
+        catch (Exception ignored) { }
+    }
 
     class TAdapter extends KeyAdapter {
         private final ActionListener listener;
