@@ -342,7 +342,7 @@ public class Oyun {
             System.out.println("pacman geride");
         }
 
-        double distance = Integer.MAX_VALUE; // e uzak veriliyor, giderek daha kısa bulunacak
+        double distance = Integer.MAX_VALUE; // uzak veriliyor, giderek daha kısa bulunacak
         Yon neastYon = Yon.WEST;
         Point tmpP;
 
