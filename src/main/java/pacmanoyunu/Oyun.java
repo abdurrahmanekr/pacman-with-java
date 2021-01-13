@@ -1,7 +1,5 @@
 package main.java.pacmanoyunu;
 
-import com.sun.istack.internal.NotNull;
-
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -73,7 +71,7 @@ public class Oyun {
         loadMap();
     }
 
-    Oyun(@NotNull ActionListener listener) {
+    Oyun(ActionListener listener) {
         this();
 
         this.listener = listener;
